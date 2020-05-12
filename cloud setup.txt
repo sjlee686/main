@@ -1,0 +1,110 @@
+
+1. 리소스그룹
+리소스그룹명:  team3
+영역: 한국중부
+
+2.쿠버네티스서비스(클러스터)
+클러스터명:  team3-aks
+DNS 이름 접두사: team3-aks-dns
+노드수: 2개
+
+3.쿠버네티스 Registry
+레지스트리명:  team3acr
+
+------------------------------------------------
+4. 리소스그룹과 클러스터 연결
+az aks get-credentials --resource-group team3 --name team3-aks
+
+5. 클러스터에서 acr 연결
+az aks update -n team3-aks -g team3 --attach-acr team3acr
+
+-------------------------------------------------
+6.  Kafka 설치
+curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
+
+7. Kafka 네임스페이스생성
+kubectl create ns kafka
+
+8. 쿠버네티스에 kafka 배포
+helm install my-kafka --namespace kafka incubator/kafka
+
+9. kafka 테스트
+eventTopic이름으로토픽생성: 
+kubectl -n kafka exec my-kafka-0 -- /usr/bin/kafka-topics --zookeeper my-kafka-zookeeper:2181 --topic eventTopic --create --partitions 1 --replication-factor 1
+
+메시지송신
+kubectl -n kafka exec -ti my-kafka-0 -- /usr/bin/kafka-console-producer --broker-list my-kafka:9092 --topic eventTopic
+수신(대기)
+kubec
+
+=================== 3. dev.Auzre.com에서 Pipeline 생성설정 ===========================================
+dev.azure.com 접속
+
+1. team3 프로젝트 생성
+
+2.[ Pipeline 초기 세팅]
+- Project Settings > Service Connections 설정
+ ㄴ Docker Registry 선택 및  Azure container Registry 선택
+ ㄴ Service Connection 명: team3Conn
+
+3.[Pipeline Library생성 -소스의 공통부분 처리를위해 사용] - azurepipeline.yml 파일 확인
+- Pipeline > library
+ ㄴ Variable추가: 그룹명 team3vg
+   ㄴcontainerRegistry : team3acr.azurecr.io
+   ㄴcontainerRegistryDockerConnection : team3Conn
+   ㄴenvironment : team3env
+
+4.  환경변수 추가 
+ ㄴ Pipeline > Environments
+   ㄴ 클러스터 연결 설정 함.
+
+5. [ Pipeline 생성] > 빌드>배포 한번에 수행
+-  (github yml) 선택하여 시작함.
+-  github 에서 pipeline 생성할 프로젝트를 선택하여 Run
+
+
+
+https://github.com/hotelmanage3/main.git
+
+https://github.com/hotelmanage3/RoomManagement.git
+https://github.com/hotelmanage3/ReservationManagement.git
+https://github.com/hotelmanage3/PaymentManagement.git
+https://github.com/hotelmanage3/gateway.git
+
+==========================================================
+-서킷브레이커를 통한 장애격리
+: 
+
+- 스케일아웃
+:
+
+- CQRS
+: 고객이 예약현황 조회 시 예약내역+객실상태를 같이 조회
+
+- Readyness  Probe 설정을 통해 무정지 CI/CD 테스트
+:
+
+- Liveness 를 통한 셀프힐링 
+:
+
+
+
+
+ kubectl exec -it httpie bin/bash
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
