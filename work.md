@@ -122,7 +122,7 @@
 
 
 ## Event Storming 결과
-* MSAEz 로 모델링한 이벤트스토밍 결과:  http://msaez.io/#/storming/nZJ2QhwVc4NlVJPbtTkZ8x9jclF2/every/a77281d704710b0c2e6a823b6e6d973a/-M5AV2z--su_i4BfQfeF
+* MSAEz 로 모델링한 이벤트스토밍 결과: http://msaez.io/#/storming/2m2tQgy98Hd6xn2M9COi52ZfQSM2/every/aad1829e0de609fc5625e55fc4c222dc/-M71rY-BTFyMTTmKiNe8
 
 
 ### 이벤트 도출 및 부적격 이벤트 탈락
@@ -168,39 +168,48 @@
 
 ![image](https://user-images.githubusercontent.com/487999/79684167-3ecd2f00-826a-11ea-806a-957362d197e3.png)
 
-    - 고객이 메뉴를 선택하여 주문한다 (ok)
-    - 고객이 결제한다 (ok)
-    - 주문이 되면 주문 내역이 입점상점주인에게 전달된다 (ok)
-    - 상점주인이 확인하여 요리해서 배달 출발한다 (ok)
+기능적 요구사항
 
-![image](https://user-images.githubusercontent.com/487999/79684170-47256a00-826a-11ea-9777-e16fafff519a.png)
-    - 고객이 주문을 취소할 수 있다 (ok)
-    - 주문이 취소되면 배달이 취소된다 (ok)
-    - 고객이 주문상태를 중간중간 조회한다 (View-green sticker 의 추가로 ok) 
-    - 주문상태가 바뀔 때 마다 카톡으로 알림을 보낸다 (?)
+    - 고객은 예약 가능한 객실을 조회할 수 있다
+    - 고객이 객실을 선택하여 예약한다.
+    - 고객은 예약을 취소할 수 있다.
+    - 예약이 완료되면 해당 객실은 '예약불가' 상태로 변경된다.
+    - 결제가 완료되면 예약이 완료된다.
+    - 고객은 결제를 취소할 수 있다.
+    - 고객이 체크아웃 하면 관리자에게 객실 정비 요청이 된다.
+    - 고객은 객실에 대한 평가를 등록한다.
 
 
 ### 모델 수정
 
-![image](https://user-images.githubusercontent.com/487999/79684176-4e4c7800-826a-11ea-8deb-b7b053e5d7c6.png)
+![image](https://user-images.githubusercontent.com/52994285/81639583-52c61400-9457-11ea-9954-a79ecaeba812.png)
     
     - 수정된 모델은 모든 요구사항을 커버함.
 
 ### 비기능 요구사항에 대한 검증
 
-![image](https://user-images.githubusercontent.com/487999/79684184-5c9a9400-826a-11ea-8d87-2ed1e44f4562.png)
 
-    - 마이크로 서비스를 넘나드는 시나리오에 대한 트랜잭션 처리
-        - 고객 주문시 결제처리:  결제가 완료되지 않은 주문은 절대 받지 않는다는 경영자의 오랜 신념(?) 에 따라, ACID 트랜잭션 적용. 주문와료시 결제처리에 대해서는 Request-Response 방식 처리
-        - 결제 완료시 점주연결 및 배송처리:  App(front) 에서 Store 마이크로서비스로 주문요청이 전달되는 과정에 있어서 Store 마이크로 서비스가 별도의 배포주기를 가지기 때문에 Eventual Consistency 방식으로 트랜잭션 처리함.
-        - 나머지 모든 inter-microservice 트랜잭션: 주문상태, 배달상태 등 모든 이벤트에 대해 카톡을 처리하는 등, 데이터 일관성의 시점이 크리티컬하지 않은 모든 경우가 대부분이라 판단, Eventual Consistency 를 기본으로 채택함.
+
+트랜잭션
+ - 결제가 되지 않은 예약건은 아예 예약이 완료되지 않아야 한다 Sync 호출
+장애격리
+ - 결제시스템이 수행되지 않더라도 객실 예약은 365일 24시간 받을 수 있어야 한다 Async (event-driven), Eventual Consistency
+ - 결제시스템이 과중되면 사용자를 잠시동안 받지 않고 결제를 잠시후에 하도록 유도한다 Circuit breaker, fallback
+성능
+ - 고객이 자주 객실관리시스템에서 확인할 수 있는 객실상태를 예약시스템(프론트엔드)에서 확인할 수 있어야 한다 CQRS
+
+   # - 마이크로 서비스를 넘나드는 시나리오에 대한 트랜잭션 처리
+   #     - 예약 시 결제처리:  결제가 완료되지 않은 주문은 절대 받지 않는다는 경영자의 오랜 신념(?) 에 따라, ACID 트랜잭션 적용. 주문와료시 결제처리에 대해서는 Request-Response 방식 처리
+   #     - 결제 완료시 점주연결 및 배송처리:  App(front) 에서 Store 마이크로서비스로 주문요청이 전달되는 과정에 있어서 Store 마이크로 서비스가 별도의 배포주기를 가지기 때문에 Eventual Consistency 방식으로 트랜잭션 처리함.
+   #     - 나머지 모든 inter-microservice 트랜잭션: 주문상태, 배달상태 등 모든 이벤트에 대해 카톡을 처리하는 등, 데이터 일관성의 시점이 크리티컬하지 않은 모든 경우가 대부분이라 판단, Eventual Consistency 를 기본으로 채택함.
 
 
 
 
 ## 헥사고날 아키텍처 다이어그램 도출
     
-![image](https://user-images.githubusercontent.com/487999/79684772-eba9ab00-826e-11ea-9405-17e2bf39ec76.png)
+![image](https://user-images.githubusercontent.com/52994285/81639942-49897700-9458-11ea-9cd9-d1e7bd608dff.png)
+
 
 
     - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함
