@@ -108,7 +108,8 @@
 
 
 ## Event Storming 결과
-* MSAEz 로 모델링한 이벤트스토밍 결과: http://msaez.io/#/storming/2m2tQgy98Hd6xn2M9COi52ZfQSM2/every/aad1829e0de609fc5625e55fc4c222dc/-M71rY-BTFyMTTmKiNe8
+* MSAEz 로 모델링한 이벤트스토밍 결과: 
+![image](https://user-images.githubusercontent.com/36434874/81758539-177e2080-94fd-11ea-8f94-889773315098.png)
 
 
 ### 이벤트 도출 및 부적격 이벤트 탈락
