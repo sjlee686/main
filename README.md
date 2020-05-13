@@ -105,7 +105,10 @@
 ## TO-BE 조직 (Vertically-Aligned)
   ![image](https://user-images.githubusercontent.com/52994285/81630694-3a4aff00-9441-11ea-8826-482c404585f7.png)
 
-
+[조직 KPI]
+예약팀 : 고객의 예약을 최대한 많이 받아야 함.
+결제팀 : 결제 안정성을 최대한 확보해야 함.
+객실관리팀 : 고객의 객실평가 점수가 높아야 함.
 
 ## Event Storming 결과
 * MSAEz 로 모델링한 이벤트스토밍 결과: 
@@ -147,7 +150,6 @@
 
 ![image](https://user-images.githubusercontent.com/52994285/81632152-8481af80-9444-11ea-8859-6fd41cba4fde.png)
 
-    - View Model 추가
 
 ### 1차 완성본에 대한 기능적/비기능적 요구사항을 커버하는지 검증
 
