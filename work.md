@@ -327,14 +327,16 @@ public interface ReservationManagementRepository extends PagingAndSortingReposit
 ```
 - 적용 후 REST API 의 테스트
 ```
-#  ReservationManagement 서비스의 예약처리
-http localhost:8081/ reservationNumber="통닭"
+
 
 #  RoomManagement 서비스의 객실정보처리
-http localhost:8083/주문처리s orderId=1
+http post localhost:8083/roomManagements roomStatus="first"
+
+#  ReservationManagement 서비스의 예약처리
+http post localhost:8081/reservationManagements  customerName="Lee" customerId=123 reserveStatus="1" roomNumber=1 paymentPrice=50000
 
 # 예약 상태 확인
-http localhost:8081/ReservationManagement/1
+http post localhost:8084/rommInfos
 
 ```
 
@@ -347,7 +349,7 @@ http localhost:8081/ReservationManagement/1
 - 결제서비스를 호출하기 위하여 Stub과 (FeignClient) 를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
 
 ```
-# (app) 결제이력Service.java
+# (payment) 결제이력Service.java
 
 package fooddelivery.external;
 
