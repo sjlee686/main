@@ -469,9 +469,13 @@ http localhost:8084/roomInfos     # 모든 주문의 상태가 "배송됨"으로
 
 ## CI/CD 설정
 
+![image](https://user-images.githubusercontent.com/36434874/81780960-55e20280-9532-11ea-8461-3603c2204241.png)
 
 각 구현체들은 각자의 source repository 에 구성되었고, 사용한 CI/CD 플랫폼은 AZURE를 사용하였으며, pipeline build script 는 각 프로젝트 폴더 이하에 azure-pipelines.yml 에 포함되었다.
 
+![image](https://user-images.githubusercontent.com/36434874/81782632-17017c00-9535-11ea-9562-9750c1bfd24e.png)
+
+![image](https://user-images.githubusercontent.com/36434874/81782849-65af1600-9535-11ea-8c64-41e6a80ada77.png)
 
 ## 동기식 호출 / 서킷 브레이킹 / 장애격리
 
