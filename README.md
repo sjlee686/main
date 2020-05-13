@@ -339,83 +339,87 @@ http post localhost:8084/rommInfos
 - 결제서비스를 호출하기 위하여 Stub과 (FeignClient) 를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
 
 ```
-# (payment) 결제이력Service.java
+# (payment) PaymentManagementService.java
 
-package fooddelivery.external;
+package hotelmanage.external;
 
-@FeignClient(name="pay", url="http://localhost:8082")//, fallback = 결제이력ServiceFallback.class)
-public interface 결제이력Service {
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.*;
 
-    @RequestMapping(method= RequestMethod.POST, path="/결제이력s")
-    public void 결제(@RequestBody 결제이력 pay);
+@org.springframework.stereotype.Service
+@FeignClient(name="reservationNumber", url="${api.url.payment}")
+public interface PaymentManagementService {
+
+    @RequestMapping(method= RequestMethod.POST, path="/payments", consumes = "application/json")
+    public void CompletePayment(@RequestBody Payment payment);
 
 }
 ```
 
-- 주문을 받은 직후(@PostPersist) 결제를 요청하도록 처리
+- 결제 요청 시 동기적으로 실행
 ```
-# Order.java (Entity)
+# ReservationManagement.java (Entity)
 
-    @PostPersist
-    public void onPostPersist(){
-
-        fooddelivery.external.결제이력 pay = new fooddelivery.external.결제이력();
-        pay.setOrderId(getOrderId());
-        
-        Application.applicationContext.getBean(fooddelivery.external.결제이력Service.class)
-                .결제(pay);
+    @PreUpdate
+    public void onPreUpdate(){
+        ...
+        Application.applicationContext.getBean(hotelmanage.external.PaymentManagementService.class).CompletePayment(payment);
     }
 ```
 
-- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 결제 시스템이 장애가 나면 주문도 못받는다는 것을 확인:
+- 동기식으로 결제 요청시 결제 시스템 장애의 경우 예약 불가 확인 :
+```
+#결제요청
+http post http://ReservationManagement:8080/reservationManagements reservationNumber=1 reserveStatus="reserve" customerName="Lee" customerId=123 roomNumber=1 paymentPrice=50001
+
+```
 
 
 ```
-# 결제 (pay) 서비스를 잠시 내려놓음 (ctrl+c)
+#객실등록
+http post localhost:8083/roomManagements roomStatus="first"
 
-#주문처리
-http localhost:8081/orders item=통닭 storeId=1   #Fail
-http localhost:8081/orders item=피자 storeId=2   #Fail
+#예약요청 (객실이 있을경우)
+http post http://ReservationManagement:8080/reservationManagements  customerName="Lee" customerId=123 reserveStatus="1" roomNumber=1 paymentPrice=50000
 
-#결제서비스 재기동
-cd 결제
-mvn spring-boot:run
+#결제요청
+http post http://ReservationManagement:8080/reservationManagements reservationNumber=1 reserveStatus="reserve" customerName="Lee" customerId=123 roomNumber=1 paymentPrice=50001
 
-#주문처리
-http localhost:8081/orders item=통닭 storeId=1   #Success
-http localhost:8081/orders item=피자 storeId=2   #Success
+#Check Out
+http post http://ReservationManagement:8080/reservationManagements reservationNumber=1 reserveStatus="checkOut" customerName="Lee" customerId=123 roomNumber=1 paymentPrice=50001
 ```
-
-- 또한 과도한 요청시에 서비스 장애가 도미노 처럼 벌어질 수 있다. (서킷브레이커, 폴백 처리는 운영단계에서 설명한다.)
-
-
 
 
 ## 비동기식 호출 / 시간적 디커플링 / 장애격리 / 최종 (Eventual) 일관성 테스트
 
 
-결제가 이루어진 후에 상점시스템으로 이를 알려주는 행위는 동기식이 아니라 비 동기식으로 처리하여 상점 시스템의 처리를 위하여 결제주문이 블로킹 되지 않아도록 처리한다.
+결제 이후 이를 예약 정보 변경은 비동기로 호출하여 개별적으로 조회 가능하도록 구현
  
 - 이를 위하여 결제이력에 기록을 남긴 후에 곧바로 결제승인이 되었다는 도메인 이벤트를 카프카로 송출한다(Publish)
  
 ```
-package fooddelivery;
+package hotelmanage;
 
 @Entity
-@Table(name="결제이력_table")
-public class 결제이력 {
+@Table(name="ReservationManagement_table")
+public class ReservationManagement {
 
  ...
     @PrePersist
     public void onPrePersist(){
-        결제승인됨 결제승인됨 = new 결제승인됨();
-        BeanUtils.copyProperties(this, 결제승인됨);
-        결제승인됨.publish();
-    }
+        setReserveStatus("reserve");
+        Reserved reserved = new Reserved();
+        reserved.setReservationNumber(this.getReservationNumber());
+        reserved.setReserveStatus(this.getReserveStatus());
+        reserved.setCustomerName(this.getCustomerName());
+        reserved.setCustomerId(this.getCustomerId());
+        reserved.setRoomNumber(this.getRoomNumber());
+        reserved.setPaymentPrice(this.getPaymentPrice());
 
-}
+        reserved.publishAfterCommit();
+    }
 ```
-- 상점 서비스에서는 결제승인 이벤트에 대해서 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다:
+- 예약 서비스에서 해당 비동기 호출을 수신할 PolicyHandler를 구현
 
 ```
 package hotelmanage;
@@ -425,19 +429,24 @@ package hotelmanage;
 @Service
 public class PolicyHandler{
 
-   @StreamListener(KafkaProcessor.INPUT)
-      public void wheneverPaymentCompleted_ChangeResvStatus(@Payload PaymentCompleted paymentcompleted){
+    @Autowired
+    ReservationManagementRepository reservationManagementrepository;
 
-          if(paymentcompleted.isMe()){    
-          
-                if(reservationManagementrepository.findById(paymentcompleted.getReservationNumber()) != null){
-
-                ReservationManagement reservationManagement = new ReservationManagement();
-                reservationManagement.setReserveStatus("결제완료");
+    @StreamListener(KafkaProcessor.INPUT)
+    public void wheneverPaymentCompleted_ChangeResvStatus(@Payload PaymentCompleted paymentcompleted){
+        System.out.println(paymentcompleted.toJson());
+        if(paymentcompleted.isMe()){
+            System.out.println("====================================결제완료 1차====================================");
+            if(reservationManagementrepository.findById(paymentcompleted.getReservationNumber()) != null){
+                System.out.println("====================================결제완료====================================");
+                ReservationManagement reservationManagement = reservationManagementrepository.findById(paymentcompleted.getReservationNumber()).get();
+                reservationManagement.setReserveStatus("paymentComp");
                 reservationManagementrepository.save(reservationManagement);
             }
 
-        }          
+        }
+
+    }
 
 }
 
