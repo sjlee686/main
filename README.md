@@ -473,7 +473,7 @@ mvn spring-boot:run
 http localhost:8084/roomInfos     # 모든 주문의 상태가 "배송됨"으로 확인
 ```
 
-## CQRS 패턴
+## CQRS 패턴 
 사용자 View를 위한 객실 정보 조회 서비스를 위한 별도의 객실 정보 저장소를 구현
 - 이를 하여 RoomInfo 서비스를 별도로 구축하고 저장 이력을 기록한다.
 - 모든 정보는 비동기 방식으로 호출한다.
