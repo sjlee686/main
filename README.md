@@ -473,6 +473,60 @@ mvn spring-boot:run
 http localhost:8084/roomInfos     # 모든 주문의 상태가 "배송됨"으로 확인
 ```
 
+## CQRS 패턴
+사용자 View를 위한 객실 정보 조회 서비스를 위한 별도의 객실 정보 저장소를 구현
+- 이를 하여 RoomInfo 서비스를 별도로 구축하고 저장 이력을 기록한다.
+- 모든 정보는 비동기 방식으로 호출한다.
+
+```
+RoomManagement.java(Entity)
+
+@Entity
+@Table(name="RoomManagement_table")
+public class RoomManagement {
+    ...
+
+    @PostPersist
+    public void onPostPersist(){
+        RoomConditionChanged roomConditionChanged = new RoomConditionChanged();
+        roomConditionChanged.setRoomNumber(this.getRoomNumber());
+        roomConditionChanged.setRoomStatus(this.getRoomStatus());
+        BeanUtils.copyProperties(this, roomConditionChanged);
+        roomConditionChanged.publishAfterCommit();
+    }
+    @PostUpdate
+    public void onPostUpdate(){
+            RoomConditionChanged roomConditionChanged = new RoomConditionChanged();
+            roomConditionChanged.setRoomNumber(this.getRoomNumber());
+            roomConditionChanged.setRoomStatus(this.getRoomStatus());
+            BeanUtils.copyProperties(this, roomConditionChanged);
+            roomConditionChanged.publishAfterCommit();
+    }
+```
+- RoomInfo에 저장하는 서비스 정책 (PolicyHandler)구현
+```
+PolicyHandler.java
+
+@Service
+public class PolicyHandler{
+
+    @Autowired
+    RoomInfoRepository roomInfoRepository;
+
+    @StreamListener(KafkaProcessor.INPUT)
+    public void wheneverSave_RoomInfo(@Payload RoomConditionChanged roomConditionChanged){
+
+        if(roomConditionChanged.isMe()){
+            System.out.println("##### listener 객실정보저장 : " + roomConditionChanged.toJson());
+                RoomInfo roomInfo = new RoomInfo();
+                roomInfo.setRoomNumber(roomConditionChanged.getRoomNumber());
+                roomInfo.setRoomStatus(roomConditionChanged.getRoomStatus());
+                roomInfoRepository.save(roomInfo);
+        }
+    }
+}
+
+```
 
 # 운영
 
