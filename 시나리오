@@ -1,12 +1,18 @@
 --객실등록
 http post http://RoomManagement:8080/roomManagements roomStatus="first"
+http post localhost:8083/roomManagements roomStatus="first"
 -- 객실 등록시 roomStatus를 firts로 해주세요
+http localhost:8084/roomInfo
 
 --예약 요청
 http post http://ReservationManagement:8080/reservationManagements  customerName="Lee" customerId=123 reserveStatus="1" roomNumber=1 paymentPrice=50000
+http post localhost:8081/reservationManagements  customerName="Lee" customerId=123 reserveStatus="1" roomNumber=1 paymentPrice=50000
 --결제 요청
 http post http://ReservationManagement:8080/reservationManagements reservationNumber=1 reserveStatus="reserve" customerName="Lee" customerId=123 roomNumber=1 paymentPrice=50001
+http post localhost:8081/reservationManagements reservationNumber=1 reserveStatus="reserve" customerName="Lee" customerId=123 roomNumber=1 paymentPrice=50001
 
+--Todo checkOut
+//http post http://ReservationManagement:8080/reservationManagements reservationNumber=1 reserveStatus="checkOut" customerName="Lee" customerId=123 roomNumber=1 paymentPrice=50001
 
 시나리오
 1. 객실등록
