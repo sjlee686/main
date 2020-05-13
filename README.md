@@ -135,15 +135,13 @@
     - 도메인 서열 분리 
         - Core Domain:  ReservationManagement : 없어서는 안될 핵심 서비스이며, 연간 Up-time SLA 수준을 99.999% 목표, 배포주기는 app 의 경우 1주일 1회 미만, store 의 경우 1개월 1회 미만
         - Supporting Domain:   RoomManagement : 경쟁력을 내기위한 서비스이며, SLA 수준은 연간 60% 이상 uptime 목표, 배포주기는 각 팀의 자율이나 표준 스프린트 주기가 1주일 이므로 1주일 1회 이상을 기준으로 함.
-        - General Domain:   pay : 결제서비스로 3rd Party 외부 서비스를 사용하는 것이 경쟁력이 높음 (핑크색으로 이후 전환할 예정)
+        - General Domain:   paymentManagement : 결제서비스로 3rd Party 외부 서비스를 사용하는 것이 경쟁력이 높음 (핑크색으로 이후 전환할 예정)
 
 ### 폴리시 부착 및 폴리시의 이동 후  컨텍스트 매핑 (파란선은 Pub/Sub, 빨간선은 Req/Resp)
 
 ![image](https://user-images.githubusercontent.com/52994285/81631853-d0802480-9443-11ea-9e20-2e97cf4f5640.png)
 
 
-
-![image](https://user-images.githubusercontent.com/487999/79683641-5f938580-8266-11ea-9fdb-4e80ff6642fe.png)
 
 ### 완성된 1차 모형
 
