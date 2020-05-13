@@ -19,3 +19,19 @@ http post localhost:8081/reservationManagements reservationNumber=1 reserveStatu
 2. 예약요청
 3. 결제요청
 4. 체크아웃
+
+
+-서킷브레이커를 통한 장애격리
+: 
+
+- 스케일아웃
+:
+
+- CQRS
+: 고객이 예약현황 조회 시 예약내역+객실상태를 같이 조회
+
+- Readyness  Probe 설정을 통해 무정지 CI/CD 테스트
+:
+
+- Liveness 를 통한 셀프힐링 
+:
