@@ -5,7 +5,7 @@
 
 # Table of contents
 
-- [예제 - 음식배달](#---)
+- [객실예약서비스](#---)
   - [서비스 시나리오](#서비스-시나리오)
   - [체크포인트](#체크포인트)
   - [분석/설계](#분석설계)
@@ -21,8 +21,6 @@
   - [신규 개발 조직의 추가](#신규-개발-조직의-추가)
 
 # 서비스 시나리오
-
-배달의 민족 커버하기 - https://1sung.tistory.com/106
 
 기능적 요구사항
 1. 고객은 예약 가능한 객실을 조회할 수 있다
@@ -109,7 +107,7 @@
 
 
 ## Event Storming 결과
-* MSAEz 로 모델링한 이벤트스토밍 결과:  https://github.com/hotelmanage3/main/issues/1#issue-617041732
+* MSAEz 로 모델링한 이벤트스토밍 결과:  ![image](https://user-images.githubusercontent.com/36434874/81758539-177e2080-94fd-11ea-8f94-889773315098.png)
 
 
 ### 이벤트 도출
