@@ -116,14 +116,14 @@
 
 ![image](https://user-images.githubusercontent.com/52994285/81631466-e4775680-9442-11ea-94db-ca75e5f90eb5.png)
 
-![image](https://user-images.githubusercontent.com/52994285/81630900-b80f0a80-9441-11ea-9908-5dfb5a81cfd7.png)
+
 
 
     - 과정중 도출된 잘못된 도메인 이벤트들을 걸러내는 작업을 수행함
         - 검색시>객실 조회됨  :  UI 의 이벤트이지, 업무적인 의미의 이벤트가 아니라서 제외
 
 ### 액터 및 커맨드 부착하여 읽기 좋게
-![image](https://user-images.githubusercontent.com/487999/79683614-4ee30f80-8266-11ea-9a50-68cdff2dcc46.png)
+![image](https://user-images.githubusercontent.com/52994285/81630900-b80f0a80-9441-11ea-9908-5dfb5a81cfd7.png)
 
 
 ### 바운디드 컨텍스트로 묶기
