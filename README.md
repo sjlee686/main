@@ -154,7 +154,8 @@
 
 ### 1차 완성본에 대한 기능적/비기능적 요구사항을 커버하는지 검증
 
-![image](https://user-images.githubusercontent.com/487999/79684167-3ecd2f00-826a-11ea-806a-957362d197e3.png)
+
+![image](https://user-images.githubusercontent.com/52994285/81779409-a015b480-952f-11ea-9d4d-69b12228e8eb.png)
 
 기능적 요구사항
 
