@@ -446,18 +446,20 @@ public class PolicyHandler{
 # 객실 서비스 (room) 를 잠시 내려놓음 (ctrl+c)
 
 #예약처리
-http localhost:8081/orders item=통닭 storeId=1   #Success
-http localhost:8081/orders item=피자 storeId=2   #Success
+http post localhost:8081/reservationManagements  customerName="Lee" customerId=123 reserveStatus="1" roomNumber=1 paymentPrice=50000
+   #Success
+http post localhost:8081/reservationManagements  customerName="Lee" customerId=123 reserveStatus="1" roomNumber=1 paymentPrice=50000
+   #Success
 
-#주문상태 확인
-http localhost:8080/orders     # 주문상태 안바뀜 확인
+#객실상태 확인
+http localhost:8084/roomInfos     # 객실 안바뀜 확인
 
-#상점 서비스 기동
-cd 상점
+#객실 서비스 기동
+cd RoomManagement
 mvn spring-boot:run
 
-#주문상태 확인
-http localhost:8080/orders     # 모든 주문의 상태가 "배송됨"으로 확인
+#객실상태 확인
+http localhost:8084/roomInfos     # 모든 주문의 상태가 "배송됨"으로 확인
 ```
 
 
