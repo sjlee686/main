@@ -593,7 +593,7 @@ kubectl get deploy pay -w
 ```
 
 - siege 의 로그를 보아도 전체적인 성공률이 높아진 것을 확인 할 수 있다. 
-```
+
 
 __As-IS__
 Transactions:                    642 hits
@@ -621,7 +621,7 @@ Successful transactions:        2293
 Failed transactions:               5
 Longest transaction:           15.44
 Shortest transaction:           0.45
-```
+
 
 
 
