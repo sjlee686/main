@@ -2,7 +2,7 @@
 
 
 # 객실예약서비스
-- 3
+- 3조
 
 # Table of contents
 
