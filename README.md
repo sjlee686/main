@@ -674,3 +674,102 @@ Shortest transaction:           0.45
     - 호출관계에서 PubSub 과 Req/Resp 를 구분함
     - 서브 도메인과 바운디드 컨텍스트의 분리:  각 팀의 KPI 별로 아래와 같이 관심 구현 스토리를 나눠가짐
 
+### 구현:
+분석/설계 단계에서 도출된 헥사고날 아키텍처에 따라, 각 BC별로 대변되는 마이크로 서비스들을 스프링부트로 구현하였다
+
+### DDD 의 적용
+각 서비스내에 도출된 핵심 Aggregate Root 객체를 Entity 로 선언하였다: (예시는 pay 마이크로 서비스). 이때 가능한 현업에서 사용하는 언어 (유비쿼터스 랭귀지)를 그대로 사용하려고 노력했다
+
+```
+package hotelmanage;
+
+
+import javax.persistence.*;
+import org.springframework.beans.BeanUtils;
+
+@Entity
+@Table(name="Mileage_table")
+public class Mileage {
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private int Mileageid; // 생성
+    private int PaymentId; // 생성
+    private int PaymentPrice; // 받아야되고
+    private String PaymentStatus;//결재될떄 "Y" 로 셋팅
+    private int Mileage;
+
+    @PrePersist
+    public void onPrePersist() {
+
+            System.out.println("=============마일리지 적립 처리중=============");
+            MileageSaved mileageSaved = new MileageSaved();
+
+            mileageSaved.setPaymentId(PaymentId);
+            System.out.printf("PaymentId : %d\n", PaymentId);
+            mileageSaved.setPaymentPrice(PaymentPrice);
+            System.out.printf("PaymentPrice : %d\n", PaymentPrice);
+            mileageSaved.setPaymentStatus(PaymentStatus);
+            System.out.printf("PaymentStatus : %s\n", PaymentStatus);
+
+            if("Y".equals(PaymentStatus)) {
+                Mileage = PaymentPrice / 100;
+            }else{
+                Mileage = 0;
+            }
+
+            System.out.printf("Mileage : %d\n", Mileage);
+
+            BeanUtils.copyProperties(this, mileageSaved);
+            mileageSaved.publishAfterCommit();
+
+            try {
+                Thread.currentThread().sleep((long) (400 + Math.random() * 220));
+                System.out.println("=============마일리지 적립 완료=============");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+    }
+
+    public int getMileageid() {
+        return Mileageid;
+    }
+
+    public void setMileageid(int mileageid) {
+        Mileageid = mileageid;
+    }
+
+    public int getPaymentId() {
+        return PaymentId;
+    }
+
+    public void setPaymentId(int paymentId) {
+        PaymentId = paymentId;
+    }
+
+    public int getPaymentPrice() {
+        return PaymentPrice;
+    }
+
+    public void setPaymentPrice(int paymentPrice) {
+        PaymentPrice = paymentPrice;
+    }
+
+    public String getPaymentStatus() {
+        return PaymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        PaymentStatus = paymentStatus;
+    }
+
+    public int getMileage() {
+        return Mileage;
+    }
+
+    public void setMileage(int mileage) {
+        Mileage = mileage;
+    }
+}
+
