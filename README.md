@@ -174,6 +174,9 @@
 ![image](https://user-images.githubusercontent.com/52994285/81639583-52c61400-9457-11ea-9954-a79ecaeba812.png)
     
     - 수정된 모델은 모든 요구사항을 커버함.
+    
+    
+
 
 ### 비기능 요구사항에 대한 검증
 
@@ -205,7 +208,7 @@
     - Inbound adaptor와 Outbound adaptor를 구분함
     - 호출관계에서 PubSub 과 Req/Resp 를 구분함
     - 서브 도메인과 바운디드 컨텍스트의 분리:  각 팀의 KPI 별로 아래와 같이 관심 구현 스토리를 나눠가짐
-
+    
 
 # 구현:
 
@@ -625,6 +628,25 @@ Failed transactions:               5
 Longest transaction:           15.44
 Shortest transaction:           0.45
 ```
+
+
+### 개별과제용 요구사항 도출
+
+기능적 요구사항
+1. 고객이 결재시 결재금액의 1% 마일리지를 적립한다
+2. 적립한 마일리지의 금액을 사용하여 결재를 할수 있다.
+
+비기능적 요구사항
+1. 결재시 마일리지 적립은 동기식으로 구현한다.
+2. 마일리지를 사용하여 결재도 동기식으로 구현한다.
+
+    
+### 개별과제용 신규 모델링 추가
+
+![image](https://user-images.githubusercontent.com/25599335/81891789-55a23f80-95e4-11ea-9926-e6d4260bf944.png)
+
+
+### 개별과제  기능적/비기능적 요구사항을 커버하는지 검증
 
 
 
