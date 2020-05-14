@@ -636,7 +636,7 @@ Shortest transaction:           0.45
 ### 개별과제 분석 설계
 
 -- To-BE 조직
-![image](https://user-images.githubusercontent.com/25599335/81892580-6bb0ff80-95e6-11ea-8dbf-bef208195645.png)
+![image](https://user-images.githubusercontent.com/25599335/81894577-0f041380-95eb-11ea-957d-3098c0076ffc.png)
 
 
 
