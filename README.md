@@ -772,4 +772,19 @@ public class Mileage {
         Mileage = mileage;
     }
 }
+```
 
+ - Entity Pattern 과 Repository Pattern 을 적용하여 JPA 를 통하여 별도의 처리가 없도록 데이터 접근 어댑터를 자동 생성하기 위하여 Spring     
+   Data REST 의 RestRepository 를 적용하였다
+
+```
+package hotelmanage;
+
+import org.springframework.data.repository.PagingAndSortingRepository;
+
+
+public interface MileageRepository extends PagingAndSortingRepository<Mileage, Long> {
+}
+````
+
+### 
