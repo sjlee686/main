@@ -787,4 +787,9 @@ public interface MileageRepository extends PagingAndSortingRepository<Mileage, L
 }
 ````
 
-### 
+  - 로컬 테스트 진행 개별 모듈 
+  
+  ![image](https://user-images.githubusercontent.com/25599335/81893554-e24efc80-95e8-11ea-97db-16ead5d62bcd.png)
+  
+  ![image](https://user-images.githubusercontent.com/25599335/81893683-0579ac00-95e9-11ea-9a3b-acf9907c1f55.png)
+
