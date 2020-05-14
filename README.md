@@ -666,5 +666,11 @@ Shortest transaction:           0.45
 1. 결재시 마일리지 적립은 동기식으로 구현한다.
 2. 마일리지를 사용하여 결재도 동기식으로 구현한다.
 
+### 헥사고날 아키텍처 다이어그램 도출
 
+![image](https://user-images.githubusercontent.com/25599335/81893018-8768d580-95e7-11ea-8b20-61299296d026.png)
+
+    - Inbound adaptor와 Outbound adaptor를 구분함
+    - 호출관계에서 PubSub 과 Req/Resp 를 구분함
+    - 서브 도메인과 바운디드 컨텍스트의 분리:  각 팀의 KPI 별로 아래와 같이 관심 구현 스토리를 나눠가짐
 
