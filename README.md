@@ -653,7 +653,7 @@ Shortest transaction:           0.45
     
 ### 개별과제용 신규 모델링 추가
 
-![image](https://user-images.githubusercontent.com/25599335/81891789-55a23f80-95e4-11ea-9926-e6d4260bf944.png)
+![81891789-55a23f80-95e4-11ea-9926-e6d4260bf944](https://user-images.githubusercontent.com/25599335/81894309-681f7780-95ea-11ea-8aaa-a5c109ca77e8.png)
 
 
 ### 개별과제  기능적/비기능적 요구사항을 커버하는지 검증
